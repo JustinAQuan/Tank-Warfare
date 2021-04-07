@@ -15,5 +15,5 @@ class Play extends Phaser.Scene {
     }
 
     // white borders
-    this.add.rectangle
+    
 }

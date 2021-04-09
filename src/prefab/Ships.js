@@ -4,6 +4,6 @@ class Ships extends Phaser.GameObject.Sprite {
     }
 
     update() {
-        if(this.x < 0)
+        if(this.x < 0) {}
     }
 }

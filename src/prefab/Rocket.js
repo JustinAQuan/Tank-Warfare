@@ -10,13 +10,12 @@ class Rocket extends Phaser.GameObjects.Sprite {
 
     update() {
         // TODO: only move if not firing 
-	    if(keyLEFT.isDown) {
+	    if(keyLEFT.isDown && this.x > 50) {
     	    this.x -= this.moveSpeed;
         }
         
-        else if (keyRIGHT.isDown) {
+        else if (keyRIGHT.isDown && this.x < 590) {
     	    this.x += this.moveSpeed;
         }
-
     }
 }

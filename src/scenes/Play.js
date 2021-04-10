@@ -4,18 +4,20 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('rocket', '/assets/rocket.png');
-        this.load.image('spaceship', '/assets/rocket.png');
-        this.load.image('starfield', '/assets/starfield.png');
+        this.load.image('rocket', './assets/rocket.png');
+        this.load.image('spaceship', './assets/spaceship.png');
+        this.load.image('starfield', './assets/starfield.png');
     }
 
     create() {
         // starfield background
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
 
+        // enemy spaceships
+        this.ship1 = new Ships(this, 100, 200, 'spaceship').setOrigin(0,0);
+
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, 431, 'rocket').setOrigin(0.5, 0);
-
 
         // green UI background
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -36,5 +38,20 @@ class Play extends Phaser.Scene {
     update() {
         this.starfield.tilePositionX -= 4;
         this.p1Rocket.update();
+        this.ship1.update();
+
+        this.checkCollision(this.p1Rocket, this.ship1)
+    }
+
+    checkCollision(rocket, ship) {
+        if(rocket.x > ship.x && 
+            rocket.x < ship.x+ship.width &&
+            rocket.y > ship.y &&
+            rocket.y < ship.y + ship.height)
+            {
+                ship.alpha = 0;
+                rocket.reset();
+                ship.rest();
+            }
     }
 }

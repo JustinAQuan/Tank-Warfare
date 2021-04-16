@@ -4,43 +4,78 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        // Rocket Patrol Tutorial
-        // this.load.image('rocket', './assets/rocket.png');
-        // this.load.image('spaceship', './assets/spaceship.png');
-        // this.load.image('starfield', './assets/starfield.png');
-        // this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
-
-        // Rocket Patrol Remake (Mad Max theme)
-        this.load.spritesheet('enemyCar', './assets/enemy_cars.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 2});
-        this.load.spritesheet('carExplode', './assets/car_explode.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 5});
+        this.load.spritesheet('Player1', './assets/Player164px.png', {frameWidth: 64, frameHeight: 64});
+        this.load.image('Player2', './assets/Player264px.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 2});
+        this.load.image('Bullet', './assets/Bullet16px.png');
+        this.load.image('EnemyTank', './assets/EnemyTank64px.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 2});
+        this.load.image('Desert', './assets/Desert_Background.png');
+        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
 
     create() {
-        // // starfield background
-        // this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        // desert background
+        this.desert = this.add.tileSprite(0, 0, 640, 480, 'Desert').setOrigin(0,0);
 
-        // // add rocket (p1)
-        // this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize * 1.5, 'rocket').setOrigin(0.5, 0);
+        // animation config
+        this.anims.create({
+            key: 'P1',
+            frames: this.anims.generateFrameNumbers('Player1', {start: 0, end: 2}),
+            frameRate: 12,
+            repeat: -1
+        });
 
-        // // add spaceships (x3)
-        // this.ship01 = new Ships(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
-        // this.ship02 = new Ships(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0,0);
-        // this.ship03 = new Ships(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        // add Player1
+        this.Player1 = new Player(
+            this, 
+            game.config.width/2, 
+            game.config.height - borderUISize*3, 
+            'Player1'
+        ).setOrigin(0.5, 0);
+
+        // define Player1 keys
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+        // // define Player2 keys
+        // if(game.settings.twoPlayer){
+        //     keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+        //     keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        //     keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+            
+        //     this.Player2 = new Player(
+        //         this, 
+        //         game.config.width/2 + 50, 
+        //         game.config.height - borderUISize * 1.5, 
+        //         'Player2',
+        //         0,
+        //         keyLEFT, keyRIGHT, keyL
+        //         ).setOrigin(0.5, 0);
+        // }
+
+        // // define restart
+        // keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+
+        // // add enemies (x3)
+        // this.enemy1 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
+        // this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
+        // this.enemy3 = new Enemy(this, game.config.width, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+
+        // if(game.settings.twoPlayer){
+        //     // add more enemies (x3)
+        //     this.enemy1 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
+        //     this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
+        //     this.enemy3 = new Enemy(this, game.config.width, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+        // }
 
         // // green UI background
         // this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         
-        // // white borders
-        // this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        // this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        // this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-        // this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-
-        // // define keys
-        // keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        // keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        // keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        // keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        // white borders
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
         // // animation config
         // this.anims.create({
@@ -77,90 +112,71 @@ class Play extends Phaser.Scene {
         //     this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
         //     this.gameOver = true;
         // }, null, this);
-
-        this.enemy01 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'enemyCar', 0, 30).setOrigin(0, 0);
-        
-        this.anims.create({
-            key: 'enemy',
-            frames: this.anims.generateFrameNumbers('enemyCar', {start: 0, end: 2, first: 0}),
-            frameRate: 12,
-            repeat: -1
-        })
-
-        this.anims.create({
-            key: 'explosion',
-            frames: this.anims.generateFrameNumbers('carExplode', {start: 0, end: 5, first: 0}),
-            frameRate: 12
-        });
-
-        this.enemy01.play('enemy');
     }
 
     update() {
-        this.enemy01.x -= 2;
-        
+        this.desert.tilePositionX -= 4;
 
-        // this.starfield.tilePositionX -= 4;
+        this.Player1.update();
+        let move = this.add.sprite(this.Player1.x, this.Player1.y).setOrigin(0.5,0);
+        move.anims.play('P1');
 
-        // if(!this.gameOver){
-        //     this.p1Rocket.update();
-        //     this.ship01.update();
-        //     this.ship02.update();
-        //     this.ship03.update();
-        // }
+        // this.enemy1.update();
+        // this.enemy2.update();
+        // this.enemy3.update();
 
         // // check key input for restart
         // if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)){
         //     this.scene.restart();
         // }
         
-        if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.scene.start("menuScene");
-        }
+        // if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+        //     this.scene.start("menuScene");
+        // }
 
-        // if(this.checkCollision(this.p1Rocket, this.ship01)){
-        //     this.p1Rocket.reset();
-        //     this.shipExplode(this.ship01);
+        // if(this.checkCollision(this.Player1, this.enemy1)){
+        //     this.Player1.reset();
+        //     this.shipExplode(this.enemy1);
         // }
         
-        // if(this.checkCollision(this.p1Rocket, this.ship02)){
-        //     this.p1Rocket.reset();
-        //     this.shipExplode(this.ship02);
+        // if(this.checkCollision(this.Player1, this.enemy2)){
+        //     this.Player1.reset();
+        //     this.shipExplode(this.enemy2);
         // }
         
-        // if(this.checkCollision(this.p1Rocket, this.ship03)){
-        //     this.p1Rocket.reset();
-        //     this.shipExplode(this.ship03);
+        // if(this.checkCollision(this.Player1, this.enemy2)){
+        //     this.Player1.reset();
+        //     this.shipExplode(this.enemy2);
         // }
     }
 
-    checkCollision(rocket, ship) {
+    checkCollision(Player, enemy) {
         // simple AABB checking
-        if (rocket.x < ship.x + ship.width && 
-            rocket.x + rocket.width > ship.x && 
-            rocket.y < ship.y + ship.height &&
-            rocket.height + rocket.y > ship. y) {
+        if (Player.x < enemy.x + enemy.width && 
+            Player.x + Player.width > enemy.x && 
+            Player.y < enemy.y + enemy.height &&
+            Player.height + Player.y > enemy. y) {
                 return true;
         } else {
             return false;
         }
     }
 
-    shipExplode(ship) {
-        // temporarily hide ship
-        ship.alpha = 0;
+    shipExplode(enemy) {
+        // temporarily hide enemy tank
+        enemy.alpha = 0;
 
-        // create explosion sprite at ship's position
-        let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0,0);
+        // create explosion sprite at enemy's position
+        let boom = this.add.sprite(enemy.x, enemy.y, 'explosion').setOrigin(0,0);
         boom.anims.play('explode');     // play explode animation
         boom.on('animationcomplete', () => {    // callback after anim completes
-            ship.reset();       // resets ship's posision
-            ship.alpha = 1;     // make ship visibile again
+            enemy.reset();       // resets enemy's posision
+            enemy.alpha = 1;     // make enemy visibile again
             boom.destroy();     // remove explosion sprite
         });
 
         // score add and repaint
-        this.p1Score += ship.points;
+        this.p1Score += enemy.points;
         this.scoreLeft.text = this.p1Score;
 
         this.sound.play('sfx_explosion', {volume: 0.1});

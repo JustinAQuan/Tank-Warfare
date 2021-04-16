@@ -26,11 +26,12 @@ class Menu extends Phaser.Scene {
         }
 
         // show menu text
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'Use 🠔🠖 arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/3 - borderUISize - borderPadding, 'TANK WARFARE', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'Player 1 uses (A)(D) to move & (F) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2, 'Player 2 uses 🠔🠖 arrows to move & (L) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press 🠔 for Novice or 🠖 for Expert', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press 🠔 for 1 Player or 🠖 for 2 Player', menuConfig).setOrigin(0.5);
         
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -39,19 +40,21 @@ class Menu extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            // easy mode
+            // One player mode
             game.settings = {
               spaceshipSpeed: 3,
-              gameTimer: 60000    
+              gameTimer: 60000,
+              twoPlayer: false    
             }
             this.sound.play('sfx_select', {volume: 0.1});
             this.scene.start('playScene');    
           }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            // hard mode
+            // Two player mode
             game.settings = {
               spaceshipSpeed: 4,
-              gameTimer: 45000    
+              gameTimer: 45000,
+              twoPlayer: true    
             }
             this.sound.play('sfx_select', {volume: 0.1});
             this.scene.start('playScene');    

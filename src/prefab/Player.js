@@ -1,4 +1,4 @@
-class Rocket extends Phaser.GameObjects.Sprite {
+class Player extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
 
@@ -10,7 +10,8 @@ class Rocket extends Phaser.GameObjects.Sprite {
     }
 
     update() {
-
+        this.anims.play('P1');
+        
         // when rocket is firing, rockets moves upwards until it reaches some point to reset
         if(this.isFiring) {
             this.y -= this.moveSpeed;
@@ -23,12 +24,12 @@ class Rocket extends Phaser.GameObjects.Sprite {
         // allows for left and right movement if rocket is not firing
         else{
             // press left arrow to move left
-            if(keyLEFT.isDown) {
+            if(keyA.isDown) {
                 this.x -= this.moveSpeed;
             }
             
             // press right arrow to move right
-            else if (keyRIGHT.isDown) {
+            else if (keyD.isDown) {
                 this.x += this.moveSpeed;
             }
 
@@ -49,7 +50,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
 
     // resets the rocket's position to the "ground"
     reset(){
-        this.y = game.config.height - borderUISize - borderPadding;
+        this.y = game.config.height - borderUISize*3;
         this.isFiring = false;
     }
 }

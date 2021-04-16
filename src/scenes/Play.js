@@ -4,23 +4,36 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('rocket', './assets/rocket.png');
-        this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield.png');
+        this.load.image('Player1', './assets/Player164px.png');
+        this.load.image('Player2', './assets/Player264px.png');
+        this.load.image('Bullet', './assets/Bullet16px.png');
+        this.load.image('EnemyTank', './assets/EnemyTank64px.png');
+        this.load.image('Desert', './assets/Desert_Background.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
 
     create() {
-        // starfield background
-        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        // desert background
+        this.desert = this.add.tileSprite(0,0,640,480,'Desert').setOrigin(0,0);
 
-        // add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize * 1.5, 'rocket').setOrigin(0.5, 0);
+        // add Player1
+        this.Player1 = new Player(this, game.config.width/2, game.config.height - borderUISize * 1.5, 'Player1').setOrigin(0.5, 0);
 
-        // add spaceships (x3)
-        this.ship01 = new Ships(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Ships(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0,0);
-        this.ship03 = new Ships(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        if(twoPlayer){
+            this.Player2 = new Player(this, game.config.width/2 + 50, game.config.height - borderUISize * 1.5, 'Player2').setOrigin(0.5, 0);
+        }
+
+        // add enemies (x3)
+        this.enemy1 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
+        this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
+        this.enemy3 = new Enemy(this, game.config.width, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+
+        if(twoPlayer){
+            // add more enemies (x3)
+            this.enemy1 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
+            this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
+            this.enemy3 = new Enemy(this, game.config.width, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+        }
 
         // green UI background
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -31,11 +44,17 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
-        // define keys
+        // define Player1 keys and restart
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+        if(twoPlayer){
+            keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+            keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+            keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        }
 
         // animation config
         this.anims.create({

@@ -4,72 +4,111 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
+        // load tanks
         this.load.spritesheet('Player1', './assets/Player164px.png', {frameWidth: 64, frameHeight: 64});
-        this.load.image('Player2', './assets/Player264px.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 2});
+        this.load.spritesheet('Player2', './assets/Player264px.png', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('EnemyTank', './assets/EnemyTank64px.png', {frameWidth: 64, frameHeight: 64});
+
+        // load bullet
         this.load.image('Bullet', './assets/Bullet16px.png');
-        this.load.image('EnemyTank', './assets/EnemyTank64px.png', {frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 2});
+
+        // load background
         this.load.image('Desert', './assets/Desert_Background.png');
-        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+
+        // load explosion
+        this.load.spritesheet('explosion', './assets/car_explode.png', {frameWidth: 64, frameHeight: 64});
     }
 
     create() {
         // desert background
         this.desert = this.add.tileSprite(0, 0, 640, 480, 'Desert').setOrigin(0,0);
 
-        // animation config
+        // add Player1
+        this.Player1 = new Player(
+            this, 
+            game.config.width / 2 - 50, 
+            game.config.height - borderUISize * 3, 
+            'Player1'
+        ).setOrigin(0.5, 0);
+
+        // Player1 animation
         this.anims.create({
             key: 'P1',
-            frames: this.anims.generateFrameNumbers('Player1', {start: 0, end: 2}),
+            frames: this.anims.generateFrameNumbers('Player1', { start: 0, end: 2 }),
             frameRate: 12,
             repeat: -1
         });
 
-        // add Player1
-        this.Player1 = new Player(
-            this, 
-            game.config.width/2, 
-            game.config.height - borderUISize*3, 
-            'Player1'
-        ).setOrigin(0.5, 0);
+        // Have Player1 play animations
+        this.Player1.anims.play('P1');
 
         // define Player1 keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-        // // define Player2 keys
-        // if(game.settings.twoPlayer){
-        //     keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
-        //     keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        //     keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        // if two player mode, add second player
+        if(game.settings.twoPlayer){
+
+            // define Player2 keys
+            keyL = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+            keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+            keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
             
-        //     this.Player2 = new Player(
-        //         this, 
-        //         game.config.width/2 + 50, 
-        //         game.config.height - borderUISize * 1.5, 
-        //         'Player2',
-        //         0,
-        //         keyLEFT, keyRIGHT, keyL
-        //         ).setOrigin(0.5, 0);
-        // }
+            // add Player2
+            this.Player2 = new Player2(
+                this, 
+                game.config.width / 2 + 50, 
+                game.config.height - borderUISize * 3, 
+                'Player2'
+            ).setOrigin(0.5, 0);
 
-        // // define restart
-        // keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+            // Player2 animation
+            this.anims.create({
+                key: 'P2',
+                frames: this.anims.generateFrameNumbers('Player2', { start: 0, end: 2 }),
+                frameRate: 12,
+                repeat: -1
+            });
 
-        // // add enemies (x3)
-        // this.enemy1 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
-        // this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
-        // this.enemy3 = new Enemy(this, game.config.width, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+            // Have Player2 play animations
+            this.Player2.anims.play('P2');
+        }
 
-        // if(game.settings.twoPlayer){
-        //     // add more enemies (x3)
-        //     this.enemy1 = new Enemy(this, game.config.width + borderUISize*6, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
-        //     this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
-        //     this.enemy3 = new Enemy(this, game.config.width, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
-        // }
+        // define restart
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
-        // // green UI background
-        // this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        // Enemy animations
+        this.anims.create({
+            key: 'enemy',
+            frames: this.anims.generateFrameNumbers('EnemyTank', { start: 0, end: 2}),
+            frameRate: 12,
+            repeat: -1
+        });
+
+        // add enemies (x3)
+        this.enemy1 = new Enemy(this, game.config.width + borderUISize*5, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
+        this.enemy2 = new Enemy(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
+        this.enemy3 = new Enemy(this, game.config.width + borderUISize*1, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+
+        this.enemy1.anims.play('enemy');
+        this.enemy2.anims.play('enemy');
+        this.enemy3.anims.play('enemy');
+
+        // if two player mode, add more enemies
+        if(game.settings.twoPlayer){
+            // add more enemies (x3)
+            this.enemy4 = new Enemy(this, game.config.width + borderUISize*12, borderUISize*4, 'EnemyTank', 0, 30).setOrigin(0, 0);
+            this.enemy5 = new Enemy(this, game.config.width + borderUISize*10, borderUISize*5 + borderPadding*2, 'EnemyTank', 0, 20).setOrigin(0,0);
+            this.enemy6 = new Enemy(this, game.config.width + borderUISize*8, borderUISize*6 + borderPadding*4, 'EnemyTank', 0, 10).setOrigin(0,0);
+
+            this.enemy4.anims.play('enemy');
+            this.enemy5.anims.play('enemy');
+            this.enemy6.anims.play('enemy');
+        }
+
+        // green UI background
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         
         // white borders
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
@@ -77,77 +116,104 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
 
-        // // animation config
-        // this.anims.create({
-        //     key: 'explode',
-        //     frames: this.anims.generateFrameNumbers('explosion', {start: 0, end: 9, first:0}),
-        //     frameRate: 30
-        // });
+        // animation config
+        this.anims.create({
+            key: 'explode',
+            frames: this.anims.generateFrameNumbers('explosion', {start: 0, end: 5}),
+            frameRate: 30
+        });
 
-        // // initialize score
-        // this.p1Score = 0;
+        // initialize score
+        this.p1Score = 0;
 
-        // // display score
-        // let scoreConfig = {
-        //     fontFamily: 'Courier',
-        //     fonstSize: '28px',
-        //     backgroundColor: '#F3B141',
-        //     color: '#843605',
-        //     align: 'right',
-        //     padding: {
-        //         top: 5,
-        //         bottom: 5,
-        //     },
-        //     fixedWidth: 100
-        // }
+        // display score
+        let scoreConfig = {
+            fontFamily: 'Courier',
+            fonstSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+        }
 
-        // this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
         
-        // this.gameOver = false;
+        this.gameOver = false;
 
-        // // 60-second play clock
-        // scoreConfig.fixedWidth = 0;
-        // this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-        //     this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-        //     this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
-        //     this.gameOver = true;
-        // }, null, this);
+        // 60-second play clock
+        scoreConfig.fixedWidth = 0;
+        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+            this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
+            this.gameOver = true;
+        }, null, this);
     }
 
     update() {
+        // Desert Background moving to the right
         this.desert.tilePositionX -= 4;
 
+        // Updating what Player1 does
         this.Player1.update();
-        let move = this.add.sprite(this.Player1.x, this.Player1.y).setOrigin(0.5,0);
-        move.anims.play('P1');
 
-        // this.enemy1.update();
-        // this.enemy2.update();
-        // this.enemy3.update();
+        if(game.settings.twoPlayer){
+            this.Player2.update();
+        }
 
-        // // check key input for restart
-        // if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)){
-        //     this.scene.restart();
-        // }
-        
-        // if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-        //     this.scene.start("menuScene");
-        // }
+        this.enemy1.update();
+        this.enemy2.update();
+        this.enemy3.update();
 
-        // if(this.checkCollision(this.Player1, this.enemy1)){
-        //     this.Player1.reset();
-        //     this.shipExplode(this.enemy1);
-        // }
+        if(game.settings.twoPlayer){
+            this.enemy4.update();
+            this.enemy5.update();
+            this.enemy6.update();
+        }
+
+        // check key input for restart
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)){
+            this.scene.restart();
+        }
         
-        // if(this.checkCollision(this.Player1, this.enemy2)){
-        //     this.Player1.reset();
-        //     this.shipExplode(this.enemy2);
-        // }
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.scene.start("menuScene");
+        }
+
+        if(this.checkCollision(this.Player1, this.enemy1)){
+            this.Player1.reset();
+            this.shipExplode(this.enemy1);
+        }
         
-        // if(this.checkCollision(this.Player1, this.enemy2)){
-        //     this.Player1.reset();
-        //     this.shipExplode(this.enemy2);
-        // }
+        if(this.checkCollision(this.Player1, this.enemy2)){
+            this.Player1.reset();
+            this.shipExplode(this.enemy2);
+        }
+        
+        if(this.checkCollision(this.Player1, this.enemy3)){
+            this.Player1.reset();
+            this.shipExplode(this.enemy3);
+        }
+
+        if(game.settings.twoPlayer){
+            if(this.checkCollision(this.Player1, this.enemy4)){
+                this.Player1.reset();
+                this.shipExplode(this.enemy4);
+            }
+            
+            if(this.checkCollision(this.Player1, this.enemy5)){
+                this.Player1.reset();
+                this.shipExplode(this.enemy5);
+            }
+            
+            if(this.checkCollision(this.Player1, this.enemy6)){
+                this.Player1.reset();
+                this.shipExplode(this.enemy6);
+            }
+        }
     }
 
     checkCollision(Player, enemy) {

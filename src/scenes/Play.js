@@ -165,12 +165,19 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+
+        this.sixtyTimer = game.settings.gameTimer;
+        this.add.text(game.config.width / 1.5, borderUISize + borderPadding * 2, 'TIMER');
+        this.timer = this.add.text(game.config.width / 1.5, borderUISize + borderPadding * 4, this.sixtyTimer / 1000);
     }
 
     update() {
         if(!this.gameOver){
             // Desert Background moving to the right
             this.desert.tilePositionX -= 4;
+
+            this.sixtyTimer -= 6.9;
+            this.timer.text = Number((this.sixtyTimer / 1000).toFixed(0));
 
             // Updating what Player1 does
             this.Player1.update();
@@ -217,6 +224,10 @@ class Play extends Phaser.Scene {
             if(this.bullet2.y <= borderUISize * 3 + borderPadding){
                 this.bullet2.reset();
             }
+        }
+
+        if(this.gameOver){
+            this.sfxTracks.stop();
         }
 
         // check key input for restart

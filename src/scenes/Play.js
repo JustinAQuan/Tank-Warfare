@@ -195,7 +195,7 @@ class Play extends Phaser.Scene {
             }
         }
 
-        // settings with two player mode
+        // settings with two player-mode
         if(!this.gameOver && game.settings.twoPlayer){
             this.Player2.update();
 

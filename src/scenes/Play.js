@@ -23,22 +23,27 @@ class Play extends Phaser.Scene {
         this.sfxRocket = this.sound.add('sfx_rocket', {volume: 0.1}); // add rocket sfx
         this.sfxTracks = this.sound.add('sfx_tracks', {volume: 0.2}); // add tracks sfx
 
-        // add spaceships (x3)
-        this.ship01 = new Ships(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Ships(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0,0);
-        this.ship03 = new Ships(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
-
-        // add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize * 1.5, 'rocket').setOrigin(0.5, 0);
-
-        // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        this.sfxTracks.setLoop(true);
+        this.sfxTracks.play();
         
-        // white borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+        // desert background
+        this.desert = this.add.tileSprite(0, 0, 640, 480, 'Desert').setOrigin(0,0);
+
+        // add Player1
+        this.Player1 = new Player(
+            this, 
+            game.config.width / 2 - 50, 
+            game.config.height - borderUISize * 3, 
+            'Player1'
+        ).setOrigin(0.5, 0);
+
+        // Player1 animation
+        this.anims.create({
+            key: 'P1',
+            frames: this.anims.generateFrameNumbers('Player1', { start: 0, end: 2 }),
+            frameRate: 12,
+            repeat: -1
+        });
 
         // Have Player1 play animations
         this.Player1.anims.play('P1');
@@ -155,9 +160,9 @@ class Play extends Phaser.Scene {
 
         // 60-second play clock
         scoreConfig.fixedWidth = 0;
-        this.clock = this.time.delayedCall(60000, () => {
+        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
     }
@@ -314,7 +319,7 @@ class Play extends Phaser.Scene {
         });
 
         // score add and repaint
-        this.p1score += ship.points;
+        this.p1Score += enemy.points;
         this.scoreLeft.text = this.p1Score;
 
         this.sound.play('sfx_explosion', {volume: 0.1});

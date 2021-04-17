@@ -31,5 +31,5 @@ let keyL, keyLEFT, keyRIGHT;
 //      - https://freesound.org/people/flyguy85/sounds/156919/ ("M1A2 Abrams Accelerating")
 //      - by flyguy85
 // - Explosion
-//      - 
+//      - https://freesound.org/people/deleted_user_5405837/sounds/399303/ ("Explosion_012")
 //      - by deleted_user_5405837

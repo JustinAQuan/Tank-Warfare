@@ -5,8 +5,8 @@ class Enemy extends Phaser.GameObjects.Sprite {
         // add object to existing scene
         scene.add.existing(this);
 
-        this.points = pointValue;
-        this.moveSpeed = 3;
+        this.points = pointValue;   // the amount of points this object is
+        this.moveSpeed = game.settings.spaceshipSpeed;  // object's movement speed
     }
 
     update() {

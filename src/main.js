@@ -14,7 +14,22 @@ let borderPadding = borderUISize / 3;
 let keyR;
 
 // reserve keyboard vars for player 1
-let keyF, keyA, keyD;
+let keyF, keyA, keyS;
 
 // reserve keyboard vars for player 2
 let keyL, keyLEFT, keyRIGHT;
+
+// ROCKET PATROL MODS USED
+// - Implement a simultaneous two-player mode (30)
+// - Redesign the game's artwork, UI, and sound to change its theme/aesthetic (to something other than sci-fi) (60)
+
+// CREDITS
+// - Tank Shot
+//      - https://freesound.org/people/qubodup/sounds/168707/ ("Tank Firing")
+//      - by qubodup
+// - Tank Moving
+//      - https://freesound.org/people/flyguy85/sounds/156919/ ("M1A2 Abrams Accelerating")
+//      - by flyguy85
+// - Explosion
+//      - 
+//      - by deleted_user_5405837

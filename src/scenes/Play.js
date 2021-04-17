@@ -20,6 +20,12 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        this.sfxRocket = this.sound.add('sfx_rocket', {volume: 0.1}); // add rocket sfx
+        this.sfxTracks = this.sound.add('sfx_tracks', {volume: 0.2}); // add tracks sfx
+
+        this.sfxTracks.setLoop(true);
+        this.sfxTracks.play();
+        
         // desert background
         this.desert = this.add.tileSprite(0, 0, 640, 480, 'Desert').setOrigin(0,0);
 
@@ -45,7 +51,7 @@ class Play extends Phaser.Scene {
         // define Player1 keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
         // if two player mode, add second player
         if(game.settings.twoPlayer){
@@ -74,6 +80,14 @@ class Play extends Phaser.Scene {
             // Have Player2 play animations
             this.Player2.anims.play('P2');
         }
+
+        // Add Bullet Objects for each tank
+        this.bullet1 = new Bullet(this, 0, 0, 'Bullet', 0).setOrigin(0,0);
+        this.bullet2 = new Bullet(this, 0, 0, 'Bullet', 0).setOrigin(0,0);
+
+        // sets bullet objects initial alpha
+        this.bullet1.alpha = 0;
+        this.bullet2.alpha = 0;
 
         // define restart
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -108,13 +122,13 @@ class Play extends Phaser.Scene {
         }
 
         // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x1ca35b).setOrigin(0, 0);
         
         // white borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x027538).setOrigin(0 ,0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x027538).setOrigin(0 ,0);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0x027538).setOrigin(0 ,0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x027538).setOrigin(0 ,0);
 
         // animation config
         this.anims.create({
@@ -154,24 +168,55 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        // Desert Background moving to the right
-        this.desert.tilePositionX -= 4;
+        if(!this.gameOver){
+            // Desert Background moving to the right
+            this.desert.tilePositionX -= 4;
 
-        // Updating what Player1 does
-        this.Player1.update();
+            // Updating what Player1 does
+            this.Player1.update();
 
-        if(game.settings.twoPlayer){
-            this.Player2.update();
+            this.enemy1.update();
+            this.enemy2.update();
+            this.enemy3.update();
+
+            if(Phaser.Input.Keyboard.JustDown(keyF) && this.bullet1.alpha != 1){
+                this.sfxRocket.play();  // play sfx
+                this.bullet1.alpha = 1;
+                this.bullet1.x = this.Player1.x;
+                this.bullet1.y = this.Player1.y;
+            }
+
+            if(this.bullet1.visible){
+                this.bullet1.y -=2;
+            }
+
+            if(this.bullet1.y <= borderUISize * 3 + borderPadding){
+                this.bullet1.reset();
+            }
         }
 
-        this.enemy1.update();
-        this.enemy2.update();
-        this.enemy3.update();
+        // settings with two player mode
+        if(!this.gameOver && game.settings.twoPlayer){
+            this.Player2.update();
 
-        if(game.settings.twoPlayer){
             this.enemy4.update();
             this.enemy5.update();
             this.enemy6.update();
+
+            if(Phaser.Input.Keyboard.JustDown(keyL) && this.bullet2.alpha != 1){
+                this.sfxRocket.play();  // play sfx
+                this.bullet2.alpha = 1;
+                this.bullet2.x = this.Player2.x;
+                this.bullet2.y = this.Player2.y;
+            }
+
+            if(this.bullet2.visible){
+                this.bullet2.y -=2;
+            }
+
+            if(this.bullet2.y <= borderUISize * 3 + borderPadding){
+                this.bullet2.reset();
+            }
         }
 
         // check key input for restart
@@ -183,34 +228,66 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
         }
 
-        if(this.checkCollision(this.Player1, this.enemy1)){
-            this.Player1.reset();
+        // collision checker for Player1
+        if(this.checkCollision(this.bullet1, this.enemy1)){
+            this.bullet1.reset();
             this.shipExplode(this.enemy1);
         }
         
-        if(this.checkCollision(this.Player1, this.enemy2)){
-            this.Player1.reset();
+        if(this.checkCollision(this.bullet1, this.enemy2)){
+            this.bullet1.reset();
             this.shipExplode(this.enemy2);
         }
         
-        if(this.checkCollision(this.Player1, this.enemy3)){
-            this.Player1.reset();
+        if(this.checkCollision(this.bullet1, this.enemy3)){
+            this.bullet1.reset();
             this.shipExplode(this.enemy3);
         }
 
+        // collision checker for Player2
         if(game.settings.twoPlayer){
-            if(this.checkCollision(this.Player1, this.enemy4)){
-                this.Player1.reset();
+            if(this.checkCollision(this.bullet2, this.enemy1)){
+                this.bullet2.reset();
+                this.shipExplode(this.enemy1);
+            }
+            
+            if(this.checkCollision(this.bullet2, this.enemy2)){
+                this.bullet2.reset();
+                this.shipExplode(this.enemy2);
+            }
+            
+            if(this.checkCollision(this.bullet2, this.enemy3)){
+                this.bullet2.reset();
+                this.shipExplode(this.enemy3);
+            }
+
+            if(this.checkCollision(this.bullet2, this.enemy4)){
+                this.bullet2.reset();
                 this.shipExplode(this.enemy4);
             }
             
-            if(this.checkCollision(this.Player1, this.enemy5)){
-                this.Player1.reset();
+            if(this.checkCollision(this.bullet2, this.enemy5)){
+                this.bullet2.reset();
                 this.shipExplode(this.enemy5);
             }
             
-            if(this.checkCollision(this.Player1, this.enemy6)){
-                this.Player1.reset();
+            if(this.checkCollision(this.bullet2, this.enemy6)){
+                this.bullet2.reset();
+                this.shipExplode(this.enemy6);
+            }
+
+            if(this.checkCollision(this.bullet1, this.enemy4)){
+                this.bullet1.reset();
+                this.shipExplode(this.enemy4);
+            }
+            
+            if(this.checkCollision(this.bullet1, this.enemy5)){
+                this.bullet1.reset();
+                this.shipExplode(this.enemy5);
+            }
+            
+            if(this.checkCollision(this.bullet1, this.enemy6)){
+                this.bullet1.reset();
                 this.shipExplode(this.enemy6);
             }
         }

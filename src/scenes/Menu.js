@@ -6,8 +6,9 @@ class Menu extends Phaser.Scene {
     preload() {
         // load audio
         this.load.audio('sfx_select', 'assets/blip_select12.wav');
-        this.load.audio('sfx_explosion', 'assets/explosion38.wav');
-        this.load.audio('sfx_rocket', 'assets/rocket_shot.wav');
+        this.load.audio('sfx_explosion', 'assets/kaboom.wav');
+        this.load.audio('sfx_rocket', 'assets/pewpew.wav');
+        this.load.audio('sfx_tracks', 'assets/tank_tracks.wav')
     }
 
     create() {
@@ -27,7 +28,7 @@ class Menu extends Phaser.Scene {
 
         // show menu text
         this.add.text(game.config.width/2, game.config.height/3 - borderUISize - borderPadding, 'TANK WARFARE', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'Player 1 uses (A)(D) to move & (F) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'Player 1 uses (A)(S) to move & (F) to fire', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Player 2 uses 🠔🠖 arrows to move & (L) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
@@ -48,7 +49,8 @@ class Menu extends Phaser.Scene {
             }
             this.sound.play('sfx_select', {volume: 0.1});
             this.scene.start('playScene');    
-          }
+        }
+
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
             // Two player mode
             game.settings = {

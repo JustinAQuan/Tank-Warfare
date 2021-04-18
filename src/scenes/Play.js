@@ -22,6 +22,7 @@ class Play extends Phaser.Scene {
         
         // desert background
         this.desert = this.add.tileSprite(0, 0, 640, 480, 'Desert').setOrigin(0,0);
+        
         // add Player1
         this.Player1 = new Player(
             this, 
@@ -29,6 +30,7 @@ class Play extends Phaser.Scene {
             game.config.height - borderUISize * 3, 
             'Player1'
         ).setOrigin(0.5, 0);
+
         // Player1 animation
         this.anims.create({
             key: 'P1',
@@ -36,12 +38,15 @@ class Play extends Phaser.Scene {
             frameRate: 12,
             repeat: -1
         });
+
         // Have Player1 play animations
         this.Player1.anims.play('P1');
+
         // define Player1 keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
         // if two player mode, add second player
         if(game.settings.twoPlayer){
             // define Player2 keys
@@ -66,6 +71,7 @@ class Play extends Phaser.Scene {
             // Have Player2 play animations
             this.Player2.anims.play('P2');
         }
+
         // Add Bullet Objects for each tank
         this.bullet1 = new Bullet(this, 0, 0, 'Bullet', 0).setOrigin(0,0);
         this.bullet2 = new Bullet(this, 0, 0, 'Bullet', 0).setOrigin(0,0);
@@ -153,21 +159,11 @@ class Play extends Phaser.Scene {
 
             // Updating what Player1 does
             this.Player1.update();
-
-
-    
-          
-            
-          
-          
-            
-          
-    
-    @@ -219,6 +226,10 @@ class Play extends Phaser.Scene {
   
             this.enemy1.update();
             this.enemy2.update();
             this.enemy3.update();
+
             if(Phaser.Input.Keyboard.JustDown(keyF) && this.bullet1.alpha != 1){
                 this.sfxRocket.play();  // play sfx
                 this.bullet1.alpha = 1;
@@ -208,19 +204,12 @@ class Play extends Phaser.Scene {
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)){
             this.scene.restart();
-
-    
-          
-            
-          
-    
-    
-  
         }
         
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
+
         // collision checker for Player1
         if(this.checkCollision(this.bullet1, this.enemy1)){
             this.bullet1.reset();
@@ -236,6 +225,7 @@ class Play extends Phaser.Scene {
             this.bullet1.reset();
             this.shipExplode(this.enemy3);
         }
+
         // collision checker for Player2
         if(game.settings.twoPlayer){
             if(this.checkCollision(this.bullet2, this.enemy1)){
@@ -282,6 +272,7 @@ class Play extends Phaser.Scene {
             }
         }
     }
+
     checkCollision(Player, enemy) {
         // simple AABB checking
         if (Player.x < enemy.x + enemy.width && 
@@ -293,6 +284,7 @@ class Play extends Phaser.Scene {
             return false;
         }
     }
+
     shipExplode(enemy) {
         // temporarily hide enemy tank
         enemy.alpha = 0;

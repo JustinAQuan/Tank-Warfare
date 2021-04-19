@@ -47,7 +47,7 @@ class Menu extends Phaser.Scene {
               gameTimer: 60000,
               twoPlayer: false    
             }
-            this.sound.play('sfx_select', {volume: 0.1});
+            this.sound.play('sfx_select', {volume: 1});
             this.scene.start('playScene');    
         }
 
@@ -58,7 +58,7 @@ class Menu extends Phaser.Scene {
               gameTimer: 45000,
               twoPlayer: true    
             }
-            this.sound.play('sfx_select', {volume: 0.1});
+            this.sound.play('sfx_select', {volume: 1});
             this.scene.start('playScene');    
         }
     }

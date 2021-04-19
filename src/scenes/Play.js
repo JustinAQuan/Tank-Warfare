@@ -20,8 +20,8 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        this.sfxRocket = this.sound.add('sfx_rocket', {volume: 0.1}); // add rocket sfx
-        this.sfxTracks = this.sound.add('sfx_tracks', {volume: 0.2}); // add tracks sfx
+        this.sfxRocket = this.sound.add('sfx_rocket', {volume: 1}); // add rocket sfx
+        this.sfxTracks = this.sound.add('sfx_tracks', {volume: 1}); // add tracks sfx
 
         this.sfxTracks.setLoop(true);
         this.sfxTracks.play();
@@ -219,6 +219,11 @@ class Play extends Phaser.Scene {
             }
         }
 
+        if(this.gameOver){
+            // stop tracks sfx
+            this.sfxTracks.stop();
+        }
+
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)){
             this.scene.restart();
@@ -322,6 +327,6 @@ class Play extends Phaser.Scene {
         this.p1Score += enemy.points;
         this.scoreLeft.text = this.p1Score;
 
-        this.sound.play('sfx_explosion', {volume: 0.1});
+        this.sound.play('sfx_explosion', {volume: 1});
     }
 }
